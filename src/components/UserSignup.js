@@ -47,6 +47,9 @@ function UserSignup() {
     return (
         <div className="user-signup-container">
             <div className="user-signup-card">
+                <button className="back-arrow" onClick={() => navigate('/user-login')}>
+                    <i className="fas fa-arrow-left"></i>
+                </button>
                 <h2>User Signup</h2>
                 <input
                     type="text"
@@ -129,6 +132,5 @@ function UserSignup() {
         </div>
     );
 }
-
 
 export default UserSignup;

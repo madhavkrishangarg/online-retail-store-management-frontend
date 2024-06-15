@@ -14,28 +14,31 @@ function UserLogin() {
         try {
             const response = await axios.post('http://localhost:3000/api/auth_cust', { email, password });
             if (response.data.userID > 0) {
+                localStorage.setItem('userID', response.data.userID); // Store userID in localStorage
                 navigate('/user-dashboard');
             } else if (response.data.status === 401) {
                 alert('Invalid credentials');
-            }
-            else {
+            } else {
                 alert('An error occurred');
             }
         } catch (error) {
-            if (error.response.status === 500) {
+            if (error.response && error.response.status === 500) {
                 alert('Internal server error');
-            }
-            if (error.response.status === 401) {
+            } else if (error.response && error.response.status === 401) {
                 alert('Invalid credentials');
+            } else {
+                alert('An error occurred');
             }
         }
-
 
     };
 
     return (
         <div className="user-login-container">
             <div className="user-login-card">
+                <button className="back-arrow" onClick={() => navigate('/')}>
+                    <i className="fas fa-arrow-left"></i>
+                </button>
                 <h2>User Login</h2>
                 <input
                     type="text"
@@ -60,6 +63,8 @@ function UserLogin() {
                     </button>
                 </div>
                 <button onClick={handleLogin} className="user-login-button">Login</button>
+                <label className="user-signup-label">Don't have an account?</label>
+                <button onClick={() => navigate('/user-signup')} className="user-signup-button">Sign Up</button>
             </div>
         </div>
     );

@@ -1,18 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function UserDashboard() {
     const [cart, setCart] = useState([]);
     const [orders, setOrders] = useState([]);
     const [products, setProducts] = useState([]);
     const [searchPrompt, setSearchPrompt] = useState('');
-    const [userId, setUserId] = useState(1); // Assuming the user ID is 1 for now
-    setUserId(1); // Assuming the user ID is 1 for now
+    const userId = localStorage.getItem('userID');
+    const navigate = useNavigate();
+
     useEffect(() => {
+        if (!userId) {
+            navigate('/user-login');
+            return;
+        }
+
         fetchCart();
         fetchOrders();
-    }, []);
-    
+
+        const handleBeforeUnload = () => {
+            localStorage.removeItem('userID');
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+            localStorage.removeItem('userID');
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, [userId, navigate]);
+
     const fetchCart = async () => {
         try {
             const response = await axios.get(`/cart/${userId}`);

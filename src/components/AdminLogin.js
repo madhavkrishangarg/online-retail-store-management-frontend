@@ -15,14 +15,14 @@ function AdminLogin() {
     try {
       const response = await axios.post('http://localhost:3000/api/auth_admin', { username, password });
       // console.log("Response from backend", response.data);
-        if (response.data.adminID > 0) {
-          alert('Login successful');
-          navigate('/admin-dashboard');
-        } else if (response.data.status === 401) {
-          alert('Invalid credentials');
-        } else {
-          alert('An error occurred');
-        }
+      if (response.data.adminID > 0) {
+        alert('Login successful');
+        navigate('/admin-dashboard');
+      } else if (response.data.status === 401) {
+        alert('Invalid credentials');
+      } else {
+        alert('An error occurred');
+      }
     } catch (error) {
       //if status is 500, then it is an internal server error
       if (error.response.status === 500) {
@@ -38,6 +38,9 @@ function AdminLogin() {
   return (
     <div className="admin-login-container">
       <div className="admin-login-card">
+        <button className="back-arrow" onClick={() => navigate('/')}>
+          <i className="fas fa-arrow-left"></i>
+        </button>
         <h2>Admin Login</h2>
         <input
           type="text"
