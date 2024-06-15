@@ -10,10 +10,17 @@ import './App.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 function App() {
-  const RequireAuth = ({ children }) => {
+  const RequireAuthUser = ({ children }) => {
     const userID = localStorage.getItem('userID');
     if (!userID) {
       return <Navigate to="/user-login" />;
+    }
+    return children;
+  };
+  const RequireAuthAdmin = ({ children }) => {
+    const adminID = localStorage.getItem('adminID');
+    if (!adminID) {
+      return <Navigate to="/admin-login" />;
     }
     return children;
   };
@@ -26,13 +33,17 @@ function App() {
           <Route path="/admin-login" element={<AdminLogin />} />
           <Route path="/user-login" element={<UserLogin />} />
           <Route path="/user-signup" element={<UserSignup />} />
-          <Route path="/admin-dashboard" element={<AdminDashboard />} />
+          <Route path="/admin-dashboard" element={
+            <RequireAuthAdmin>
+              <AdminDashboard />
+            </RequireAuthAdmin>
+          } />
           <Route
             path="/user-dashboard"
             element={
-              <RequireAuth>
+              <RequireAuthUser>
                 <UserDashboard />
-              </RequireAuth>
+              </RequireAuthUser>
             }
           />
         </Routes>

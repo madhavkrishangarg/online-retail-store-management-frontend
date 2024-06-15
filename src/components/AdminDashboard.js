@@ -1,15 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import './AdminDashboard.css';
 
 function AdminDashboard() {
     const [product, setProduct] = useState({ name: '', price: 0, quantity: 0 });
     const [category, setCategory] = useState({ name: '', info: '' });
-    const [productCategoryMap, setProductCategoryMap] = useState({ productId: '', categoryId: '' });
+    const [productCategoryMap, setProductCategoryMap] = useState({ productID: '', categoryID: '' });
+    const [updatePrice, setUpdatePrice] = useState({ productID: '', price: 0 });
+    const [addQuantity, setAddQuantity] = useState({ productID: '', quantity: 0 });
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const adminID = localStorage.getItem('adminID');
+        if (!adminID) {
+            navigate('/admin-login');
+            return;
+        }
+
+        const handleBeforeUnload = () => {
+            localStorage.removeItem('adminID');
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, [navigate]);
 
     const handleAddProduct = async () => {
+        const adminID = localStorage.getItem('adminID');
+        if (!adminID) {
+            navigate('/admin-login');
+            return;
+        }
         try {
-            await axios.post('/products/add', product);
-            alert('Product added successfully');
+            const response = await axios.post('http://localhost:3000/api/add_product', { ...product, adminID });
+            alert('Product added successfully, new product ID: ' + response.data.productID);
         } catch (error) {
             console.error(error);
             alert('An error occurred');
@@ -17,9 +45,14 @@ function AdminDashboard() {
     };
 
     const handleAddCategory = async () => {
+        const adminID = localStorage.getItem('adminID');
+        if (!adminID) {
+            navigate('/admin-login');
+            return;
+        }
         try {
-            await axios.post('/category/add', category);
-            alert('Category added successfully');
+            const response = await axios.post('http://localhost:3000/api/add_category', { ...category, adminID });
+            alert('Category added successfully, new category ID: ' + response.data.categoryID);
         } catch (error) {
             console.error(error);
             alert('An error occurred');
@@ -27,8 +60,13 @@ function AdminDashboard() {
     };
 
     const handleLinkProductCategory = async () => {
+        const adminID = localStorage.getItem('adminID');
+        if (!adminID) {
+            navigate('/admin-login');
+            return;
+        }
         try {
-            await axios.post('/category/link', productCategoryMap);
+            await axios.post('http://localhost:3000/api/map_product-category', { ...productCategoryMap, adminID });
             alert('Product linked to category successfully');
         } catch (error) {
             console.error(error);
@@ -36,27 +74,106 @@ function AdminDashboard() {
         }
     };
 
+    const handleUpdatePrice = async () => {
+        const adminID = localStorage.getItem('adminID');
+        if (!adminID) {
+            navigate('/admin-login');
+            return;
+        }
+        try {
+            await axios.put(`http://localhost:3000/api/update_price/${updatePrice.productID}`, { adminID, price: updatePrice.price });
+            alert('Price updated successfully');
+        } catch (error) {
+            console.error(error);
+            alert('An error occurred');
+        }
+    };
+
+    const handleAddQuantity = async () => {
+        const adminID = localStorage.getItem('adminID');
+        if (!adminID) {
+            navigate('/admin-login');
+            return;
+        }
+        try {
+            await axios.put(`http://localhost:3000/api/add_quantity/${addQuantity.productID}`, { adminID, quantity: addQuantity.quantity });
+            alert('Quantity added successfully');
+        } catch (error) {
+            console.error(error);
+            alert('An error occurred');
+        }
+    };
+
+    const handleInputChange = (setter) => (e) => {
+        const { name, value, type } = e.target;
+        if (type === 'number' && value < 0) {
+            alert('Value cannot be negative');
+            return;
+        }
+        setter((prevState) => ({ ...prevState, [name]: type === 'number' ? Number(value) : value }));
+    };
+
     return (
-        <div>
-            <h2>Admin Dashboard</h2>
-            <div>
-                <h3>Add Product</h3>
-                <input type="text" placeholder="Product Name" value={product.name} onChange={(e) => setProduct({ ...product, name: e.target.value })} />
-                <input type="number" placeholder="Price" value={product.price} onChange={(e) => setProduct({ ...product, price: Number(e.target.value) })} />
-                <input type="number" placeholder="Quantity" value={product.quantity} onChange={(e) => setProduct({ ...product, quantity: Number(e.target.value) })} />
-                <button onClick={handleAddProduct}>Add Product</button>
-            </div>
-            <div>
-                <h3>Add Category</h3>
-                <input type="text" placeholder="Category Name" value={category.name} onChange={(e) => setCategory({ ...category, name: e.target.value })} />
-                <input type="text" placeholder="Info" value={category.info} onChange={(e) => setCategory({ ...category, info: e.target.value })} />
-                <button onClick={handleAddCategory}>Add Category</button>
-            </div>
-            <div>
-                <h3>Link Product and Category</h3>
-                <input type="text" placeholder="Product ID" value={productCategoryMap.productId} onChange={(e) => setProductCategoryMap({ ...productCategoryMap, productId: e.target.value })} />
-                <input type="text" placeholder="Category ID" value={productCategoryMap.categoryId} onChange={(e) => setProductCategoryMap({ ...productCategoryMap, categoryId: e.target.value })} />
-                <button onClick={handleLinkProductCategory}>Link Product and Category</button>
+        <div className="admin-dashboard-container">
+            <div className="admin-dashboard-card">
+                <h2>Admin Dashboard</h2>
+
+                <div className="admin-section">
+                    <h3>Add Product</h3>
+                    <div className="input-group">
+                        <label>Product Name</label>
+                        <input type="text" name="name" placeholder="Product Name" value={product.name} onChange={handleInputChange(setProduct)} className="admin-input" />
+                        <label>Price</label>
+                        <input type="number" name="price" placeholder="Price" value={product.price} onChange={handleInputChange(setProduct)} className="admin-input" />
+                        <label>Quantity</label>
+                        <input type="number" name="quantity" placeholder="Quantity" value={product.quantity} onChange={handleInputChange(setProduct)} className="admin-input" />
+                        <button onClick={handleAddProduct} className="admin-button">Add Product</button>
+                    </div>
+                </div>
+
+                <div className="admin-section">
+                    <h3>Add Category</h3>
+                    <div className="input-group">
+                        <label>Category Name</label>
+                        <input type="text" name="name" placeholder="Category Name" value={category.name} onChange={handleInputChange(setCategory)} className="admin-input" />
+                        <label>Info</label>
+                        <input type="text" name="info" placeholder="Info" value={category.info} onChange={handleInputChange(setCategory)} className="admin-input" />
+                        <button onClick={handleAddCategory} className="admin-button">Add Category</button>
+                    </div>
+                </div>
+
+                <div className="admin-section">
+                    <h3>Link Product and Category</h3>
+                    <div className="input-group">
+                        <label>Product ID</label>
+                        <input type="text" name="productID" placeholder="Product ID" value={productCategoryMap.productID} onChange={handleInputChange(setProductCategoryMap)} className="admin-input" />
+                        <label>Category ID</label>
+                        <input type="text" name="categoryID" placeholder="Category ID" value={productCategoryMap.categoryID} onChange={handleInputChange(setProductCategoryMap)} className="admin-input" />
+                        <button onClick={handleLinkProductCategory} className="admin-button">Link Product and Category</button>
+                    </div>
+                </div>
+
+                <div className="admin-section">
+                    <h3>Update Price</h3>
+                    <div className="input-group">
+                        <label>Product ID</label>
+                        <input type="text" name="productID" placeholder="Product ID" value={updatePrice.productID} onChange={handleInputChange(setUpdatePrice)} className="admin-input" />
+                        <label>New Price</label>
+                        <input type="number" name="price" placeholder="New Price" value={updatePrice.price} onChange={handleInputChange(setUpdatePrice)} className="admin-input" />
+                        <button onClick={handleUpdatePrice} className="admin-button">Update Price</button>
+                    </div>
+                </div>
+
+                <div className="admin-section">
+                    <h3>Add Quantity</h3>
+                    <div className="input-group">
+                        <label>Product ID</label>
+                        <input type="text" name="productID" placeholder="Product ID" value={addQuantity.productID} onChange={handleInputChange(setAddQuantity)} className="admin-input" />
+                        <label>Quantity</label>
+                        <input type="number" name="quantity" placeholder="Quantity" value={addQuantity.quantity} onChange={handleInputChange(setAddQuantity)} className="admin-input" />
+                        <button onClick={handleAddQuantity} className="admin-button">Add Quantity</button>
+                    </div>
+                </div>
             </div>
         </div>
     );

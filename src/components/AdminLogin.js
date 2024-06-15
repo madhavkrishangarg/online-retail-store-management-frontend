@@ -16,7 +16,7 @@ function AdminLogin() {
       const response = await axios.post('http://localhost:3000/api/auth_admin', { username, password });
       // console.log("Response from backend", response.data);
       if (response.data.adminID > 0) {
-        alert('Login successful');
+        localStorage.setItem('adminID', response.data.adminID);
         navigate('/admin-dashboard');
       } else if (response.data.status === 401) {
         alert('Invalid credentials');
