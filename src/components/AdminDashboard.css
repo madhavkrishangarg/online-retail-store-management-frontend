@@ -17,6 +17,14 @@
     position: relative;
 }
 
+.logout-btn {
+  position: absolute;
+  top: 10px;
+}
+
+.logout-btn .fas {
+  font-size: 1.2rem;
+}
 .admin-section {
     margin-bottom: 20px;
 }

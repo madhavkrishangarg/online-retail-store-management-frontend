@@ -116,6 +116,9 @@ function AdminDashboard() {
     return (
         <div className="admin-dashboard-container">
             <div className="admin-dashboard-card">
+                <button className="back-arrow logout-btn" onClick={() => navigate('/')}>
+                    <i className="fas fa-sign-out-alt"></i>
+                </button>
                 <h2>Admin Dashboard</h2>
 
                 <div className="admin-section">
