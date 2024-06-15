@@ -3,15 +3,17 @@ import { Link } from 'react-router-dom';
 import Search from './Search';
 import SearchResults from './SearchResults';
 import './Home.css';
+import axios from 'axios';
 
 function Home() {
     const [searchResults, setSearchResults] = useState([]);
 
     const handleSearch = async (prompt) => {
         try {
-            const response = await fetch(`/api/products?search=${prompt}`);
-            const results = await response.json();
-            setSearchResults(results);
+            const response = await axios.post('http://localhost:3000/api/search', { prompt });
+
+            setSearchResults(response.data);
+
         } catch (error) {
             console.error('Error fetching search results:', error);
         }

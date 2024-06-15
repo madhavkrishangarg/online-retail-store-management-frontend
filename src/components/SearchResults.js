@@ -1,4 +1,5 @@
 import React from 'react';
+import './SearchResults.css';
 
 function SearchResults({ results }) {
     return (
@@ -6,10 +7,10 @@ function SearchResults({ results }) {
             {results.length > 0 ? (
                 <ul>
                     {results.map((product) => (
-                        <li key={product.productID}>
-                            <h2>{product.product_name}</h2>
-                            <p>Price: {product.price}</p>
-                        </li>
+                        <li key={product.productID} className="product-item">
+                        <span className="product-name">{product.product_name}</span>
+                        <span className="product-price">Price: {product.price}</span>
+                    </li>
                     ))}
                 </ul>
             ) : (
