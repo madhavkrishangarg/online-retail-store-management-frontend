@@ -18,14 +18,20 @@ function AdminDashboard() {
             return;
         }
 
-        const handleBeforeUnload = () => {
-            localStorage.removeItem('adminID');
+        const handleNavigation = () => {
+            const currentPath = window.location.pathname;
+            if (currentPath !== '/admin-dashboard') {
+                localStorage.removeItem('adminID');
+            }
         };
 
-        window.addEventListener('beforeunload', handleBeforeUnload);
+        window.addEventListener('popstate', handleNavigation);
 
         return () => {
-            window.removeEventListener('beforeunload', handleBeforeUnload);
+            window.removeEventListener('popstate', handleNavigation);
+            if (window.location.pathname !== '/admin-dashboard') {
+                localStorage.removeItem('adminID');
+            }
         };
     }, [navigate]);
 
