@@ -19,7 +19,7 @@
 
 .search-section {
     margin-bottom: 20px;
-    max-height: 40vh;
+    max-height: 45vh;
 }
 
 .user-section {
@@ -33,6 +33,51 @@
     justify-content: center;
 }
 
+/* .logout-button {
+    position: absolute;
+    top: 10px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.logout-button .fas {
+    font-size: 1.2rem;
+}
+
+.cart-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.cart-button .fas {
+    font-size: 1.2rem;
+} */
+
+.left-buttons {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+.logout-button,
+.cart-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.logout-button .fas,
+.cart-button .fas {
+    font-size: 1.2rem;
+}
+
 .user-input {
     padding: 10px;
     font-size: 16px;
@@ -43,13 +88,16 @@
 }
 
 .user-button {
-    padding: 10px;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
     font-size: 16px;
     color: #fff;
     background-color: #2c3e50;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    margin-left: 20px;
 }
 
 .user-button:hover {
@@ -59,8 +107,9 @@
 .product-list, .cart-list, .order-list {
     list-style-type: none;
     padding: 0;
-    max-height: 40vh;
+    max-height: 30vh;
     overflow-y: auto;
+
 }
 
 .product-item, .cart-item, .order-item {
@@ -68,7 +117,10 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #b9b9b9;
+    background-color: #fefefe;
     border-radius: 5px;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
+    max-height: 20px;
+    font-weight: bold;
 }
