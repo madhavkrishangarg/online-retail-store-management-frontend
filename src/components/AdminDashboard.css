@@ -2,14 +2,17 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    /* height: 100vh; */
     background-color: #f0f2f5;
+    overflow-y: auto;
 }
 
 .admin-dashboard-card {
     background-color: #fff;
     padding: 30px;
     border-radius: 10px;
+    margin-top: 50px;
+    margin-bottom: 50px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: center;
     width: 100%;
@@ -47,15 +50,57 @@
 }
 
 .admin-button {
-    padding: 10px;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
     font-size: 16px;
     color: #fff;
     background-color: #2c3e50;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    margin-left: 10px;
 }
 
 .admin-button:hover {
     background-color: #34495e;
 }
+
+.year-input {
+    max-width: 100px;
+}
+
+.olap-list {
+    list-style-type: none;
+    padding: 0;
+    overflow-y: auto;
+    align-items: center; 
+    display: flex; 
+    flex-direction: column;
+  }
+  
+  .olap-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #b9b9b9;
+    background-color: #fefefe;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    height: 15px;
+    width: 300px;
+  }
+
+  .olap-item2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #b9b9b9;
+    background-color: #fefefe;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    height: 15px;
+    width: 500px;
+  }

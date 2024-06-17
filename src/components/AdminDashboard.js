@@ -9,6 +9,11 @@ function AdminDashboard() {
     const [productCategoryMap, setProductCategoryMap] = useState({ productID: '', categoryID: '' });
     const [updatePrice, setUpdatePrice] = useState({ productID: '', price: 0 });
     const [addQuantity, setAddQuantity] = useState({ productID: '', quantity: 0 });
+    const [olap1Data, setOlap1Data] = useState([]);
+    const [olap2Data, setOlap2Data] = useState([]);
+    const [olap3Data, setOlap3Data] = useState([]);
+    const [groupedData, setGroupedData] = useState([]);
+    const [year, setYear] = useState(2024);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -34,6 +39,52 @@ function AdminDashboard() {
             }
         };
     }, [navigate]);
+
+    const fetchOlap1Data = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/api/olap1');
+            setOlap1Data(response.data);
+            console.log(response.data);
+        } catch (error) {
+            console.error('Error fetching OLAP1 data:', error);
+        }
+    };
+
+    const fetchOlap2Data = async () => {
+        // console.log(year);
+        try {
+            const response = await axios.post('http://localhost:3000/api/olap2', { year });
+            setOlap2Data(response.data);
+        } catch (error) {
+            console.error('Error fetching OLAP2 data:', error);
+        }
+    };
+
+    const fetchOlap3Data = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/api/olap3');
+            setOlap3Data(response.data);
+            // setGroupedData(olap3data.reduce((acc, item) => {
+            //     const category = item.Category || 'No Category';
+            //     if (!acc[category]) {
+            //         acc[category] = [];
+            //     }
+            //     acc[category].push(item);
+            //     return acc;
+            // }, {});)
+            setGroupedData(response.data.reduce((acc, item) => {
+                const category = item.Category || 'No Category';
+                if (!acc[category]) {
+                    acc[category] = [];
+                }
+                acc[category].push(item);
+                return acc;
+            }, {}));
+
+        } catch (error) {
+            console.error('Error fetching OLAP3 data:', error);
+        }
+    };
 
     const handleAddProduct = async () => {
         const adminID = localStorage.getItem('adminID');
@@ -181,6 +232,62 @@ function AdminDashboard() {
                         <label>Quantity</label>
                         <input type="number" name="quantity" placeholder="Quantity" value={addQuantity.quantity} onChange={handleInputChange(setAddQuantity)} className="admin-input" />
                         <button onClick={handleAddQuantity} className="admin-button">Add Quantity</button>
+                    </div>
+                </div>
+
+                <div className="admin-section">
+                    <h3>Get Sales Data</h3>
+                    <div className="olap-section">
+                        <div className="input-group">
+                            <h4 style={{ marginRight: "2em" }}>Total Quantity and Sales by Category</h4>
+                            <button onClick={fetchOlap1Data} className="admin-button">Fetch Data</button>
+                        </div>
+                        <ul className='olap-list'>
+                            {olap1Data.map((item, index) => (
+                                <li key={index} className='olap-item'>{item.category} - {item.total_sales}</li>
+                            ))}
+                        </ul>
+
+
+
+                    </div>
+                    <div className="olap-section">
+                        <div className='input-group'> <h4>Monthly Unique Customers and Total Sales</h4>
+                            <input type="number" value={year} onChange={(e) => setYear(e.target.value)} className="year-input" />
+                            <button onClick={fetchOlap2Data} className="admin-button" style={{ marginLeft: '2em' }}>Fetch Data</button>
+                        </div>
+                        <ul className='olap-list'>
+                            {olap2Data.map((item, index) => (
+                                <li key={index} className='olap-item2'>
+                                    {item.year === null ? `Summary` : `Year: ${item.year}`}
+                                    {item.month === null ? '' : `, Month: ${item.month}`} - Unique Customers: {item.unique_customers}, Total Sales: {item.total_sales}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                    <div className="olap-section">
+                        <div className="input-group">
+                            <h4 style={{ marginRight: "2em" }}>Monthly Revenue by Category with Subtotals and Grand Total</h4>
+                            <button onClick={fetchOlap3Data} className="admin-button">Fetch Data</button>
+                        </div>
+                        <ul>
+                            {
+                                Object.keys(groupedData).map((category, index) => (
+                                    <div key={index}>
+                                        <h3>{category}</h3>
+                                        <ul className='olap-list'>
+                                            {groupedData[category].map((item, idx) => (
+                                                <li key={idx} className='olap-item'>
+                                                    {item.Year ? `Year: ${item.Year}` : ''}
+                                                    {item.Month ? `, Month: ${item.Month}` : ''}
+                                                    - Revenue: {item.Revenue}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                ))
+                            }
+                        </ul>
                     </div>
                 </div>
             </div>
