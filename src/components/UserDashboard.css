@@ -67,14 +67,17 @@
 }
 
 .logout-button,
-.cart-button {
+.cart-button, .orders-button,
+.payments-button {
     background: none;
     border: none;
     cursor: pointer;
 }
 
 .logout-button .fas,
-.cart-button .fas {
+.cart-button .fas,
+.orders-button .fas,
+.payments-button .fas {
     font-size: 1.2rem;
 }
 
@@ -121,6 +124,19 @@
     background-color: #fefefe;
     border-radius: 5px;
     margin-bottom: 5px;
-    max-height: 20px;
     font-weight: bold;
 }
+
+.product-item {
+    max-height: 40px; 
+}
+
+.cart-item {
+    max-height: 40px; 
+}
+
+.order-item {
+
+    max-height: none; 
+}
+

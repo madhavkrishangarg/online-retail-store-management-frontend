@@ -12,6 +12,7 @@ function UserDashboard() {
     const [productQuantities, setProductQuantities] = useState({});
     const [privilege_status, setPrivilege_status] = useState('');
     const [first_name, setFirst_name] = useState('');
+    const [payments, setPayments] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -59,6 +60,16 @@ function UserDashboard() {
             return () => clearInterval(intervalId);
         }
 
+        if (currentView === 'orders') {
+            const intervalId = setInterval(fetchOrders, 1000);
+            return () => clearInterval(intervalId);
+        }
+
+        if (currentView === 'payments') {
+            const intervalId = setInterval(handlePayment, 1000);
+            return () => clearInterval(intervalId);
+        }
+
         return () => {
             window.removeEventListener('popstate', handleNavigation);
             if (window.location.pathname !== '/user-dashboard') {
@@ -82,10 +93,24 @@ function UserDashboard() {
         try {
             const userId = localStorage.getItem('userID');
             const response = await axios.get(`http://localhost:3000/api/orders/${userId}`);
-            setOrders(response.data.products);
+            setOrders(response.data);
+            console.log(response.data);
         } catch (error) {
             console.error(error);
             alert('An error occurred while fetching the orders');
+        }
+    };
+
+    const handlePayment = async () => {
+        try {
+            const userId = localStorage.getItem('userID');
+            const res = await axios.get(`http://localhost:3000/api/payment/${userId}`);
+            console.log(res.data);
+            setPayments(res.data);
+            fetchCart();
+        } catch (error) {
+            console.error(error);
+            alert('An error occurred while fetching payments');
         }
     };
 
@@ -128,11 +153,11 @@ function UserDashboard() {
     const handleCancelOrder = async (orderId) => {
         try {
             const userId = localStorage.getItem('userID');
-            await axios.delete(`/cancel_order/${orderId}`, { data: { userID: userId } });
+            await axios.delete(`http://localhost:3000/api/cancel_order/${orderId}`, { data: { userID: userId } });
             fetchOrders();
         } catch (error) {
-            console.error(error);
-            alert('An error occurred while canceling the order');
+            console.error(error.response.data);
+            alert(error.response.data || 'An error occurred while cancelling the order');
         }
     };
 
@@ -169,6 +194,12 @@ function UserDashboard() {
                     <button className="cart-button" onClick={() => setCurrentView('cart')}>
                         <i className="fas fa-shopping-cart"></i>
                     </button>
+                    <button className="orders-button" onClick={() => setCurrentView('orders')}>
+                        <i className="fas fa-box"></i>
+                    </button>
+                    <button className="payments-button" onClick={() => setCurrentView('payments')}>
+                        <i className="fas fa-credit-card"></i>
+                    </button>
                 </div>
                 <h2>Welcome, {first_name}</h2>
                 <h4>Your Privilege Status: {privilege_status}</h4>
@@ -200,16 +231,20 @@ function UserDashboard() {
                     <div className="user-section">
                         <h3>Your Cart</h3>
                         <ul className="cart-list">
-                            {cart.map((item) => (
-                                <li key={item.productID} className="cart-item">
-                                    {item.product_name} - {item.quantity}: ProductID - {item.productID}
-                                    <div>
-                                        <button onClick={() => handleUpdateCart(item.productID, 1)} className="user-button">+</button>
-                                        <button onClick={() => handleUpdateCart(item.productID, -1)} className="user-button">-</button>
-                                        <button onClick={() => handleDeleteFromCart(item.productID)} className="user-button">Delete</button>
-                                    </div>
-                                </li>
-                            ))}
+                            {cart && cart.length > 0 ? (
+                                cart.map((item) => (
+                                    <li key={item.productID} className="cart-item">
+                                        {item.product_name} - {item.quantity}: ProductID - {item.productID}
+                                        <div>
+                                            <button onClick={() => handleUpdateCart(item.productID, 1)} className="user-button">+</button>
+                                            <button onClick={() => handleUpdateCart(item.productID, -1)} className="user-button">-</button>
+                                            <button onClick={() => handleDeleteFromCart(item.productID)} className="user-button">Delete</button>
+                                        </div>
+                                    </li>
+                                ))
+                            ) : (
+                                <p>No cart items to show.</p>
+                            )}
                         </ul>
                     </div>
                 )}
@@ -218,12 +253,44 @@ function UserDashboard() {
                     <div className="user-section">
                         <h3>Your Orders</h3>
                         <ul className="order-list">
-                            {orders.map((order, index) => (
-                                <li key={index} className="order-item">
-                                    {order.product_name} - {order.quantity}
-                                    <button onClick={() => handleCancelOrder(order.orderID)} className="user-button">Cancel Order</button>
-                                </li>
-                            ))}
+                            {orders && orders.length > 0 ? (
+                                orders.map((order) => (
+                                    <li key={order.orderID} className="order-item">
+                                        Order ID: {order.orderID}
+                                        <ul>
+                                            {order.products.map((product, index) => (
+                                                <li key={index} className="product-item">
+                                                    {product.product_name} - {product.total_quantity}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                        Total Price: {order.total}
+                                        <br />
+                                        Delivery Date: {order.delivery_date[0].delivery_date}
+                                        <button onClick={() => handleCancelOrder(order.orderID)} className="user-button">Cancel Order</button>
+                                    </li>
+                                ))
+                            ) : (
+                                <p>No orders to show.</p>
+                            )}
+
+                        </ul>
+                    </div>
+                )}
+
+                {currentView === 'payments' && (
+                    <div className="user-section">
+                        <h3>Your Payments</h3>
+                        <ul className="payment-list">
+                            {payments && payments.length > 0 ? (
+                                payments.map((payment, index) => (
+                                    <li key={index} className="product-item">
+                                        Payment Mode: {payment.payment_mode} | Payment Address: {payment.payment_address} | Order ID: {payment.orderID}
+                                    </li>
+                                ))
+                            ) : (
+                                <p>No payments to show.</p>
+                            )}
                         </ul>
                     </div>
                 )}
