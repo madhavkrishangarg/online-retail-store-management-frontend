@@ -51,7 +51,7 @@ function UserDashboard() {
             try {
                 const userId = localStorage.getItem('userID');
                 const res = await axios.get(`http://localhost:3000/api/payment/${userId}`);
-                console.log(res.data);
+                // console.log(res.data);
                 setPayments(res.data);
                 fetchCart();
             } catch (error) {
@@ -111,14 +111,12 @@ function UserDashboard() {
             const userId = localStorage.getItem('userID');
             const response = await axios.get(`http://localhost:3000/api/orders/${userId}`);
             setOrders(response.data);
-            console.log(response.data);
+            // console.log(response.data);
         } catch (error) {
             console.error(error);
             alert('An error occurred while fetching the orders');
         }
     };
-
-
 
     const handleSearch = async (prompt) => {
         try {
@@ -137,12 +135,12 @@ function UserDashboard() {
         }
         try {
             const userId = localStorage.getItem('userID');
-            await axios.post(`http://localhost:3000/api/cart/${userId}/${productId}`, { quantity });
+            const res = await axios.post(`http://localhost:3000/api/cart/${userId}/${productId}`, { quantity });
             fetchCart();
             alert('Added to cart');
         } catch (error) {
             console.error(error);
-            alert('An error occurred while adding to cart');
+            alert(error.response.data || 'An error occurred while adding to the cart');
         }
     };
 
@@ -151,9 +149,10 @@ function UserDashboard() {
             const userId = localStorage.getItem('userID');
             await axios.put(`http://localhost:3000/api/cart/${userId}/${productId}`, { quantity });
             fetchCart();
+            alert('Cart updated');
         } catch (error) {
             console.error(error);
-            alert('An error occurred while updating the cart');
+            alert(error.response.data || 'An error occurred while updating the cart');
         }
     };
 
@@ -162,6 +161,7 @@ function UserDashboard() {
             const userId = localStorage.getItem('userID');
             await axios.delete(`http://localhost:3000/api/cancel_order/${orderId}`, { data: { userID: userId } });
             fetchOrders();
+            alert('Order cancelled');
         } catch (error) {
             console.error(error.response.data);
             alert(error.response.data || 'An error occurred while cancelling the order');
@@ -185,6 +185,7 @@ function UserDashboard() {
             const userId = localStorage.getItem('userID');
             await axios.delete(`http://localhost:3000/api/cart/${userId}/${productId}`);
             fetchCart();
+            alert('Deleted from cart');
         } catch (error) {
             console.error(error);
             alert('An error occurred while deleting from the cart');
@@ -228,8 +229,8 @@ function UserDashboard() {
                         <i className="fas fa-credit-card"></i>
                     </button>
                 </div>
-                <h2>Welcome, {first_name}</h2>
-                <h4>Your Privilege Status: {privilege_status}</h4>
+                <h2 style={{ marginBottom: '-0.3em' }}>Welcome, {first_name}</h2>
+                <h4 style={{ marginTop: '0.5em' }}>Your Privilege Status: {privilege_status}</h4>
                 <div className="search-section">
                     <h3>Search Products</h3>
 
@@ -277,19 +278,21 @@ function UserDashboard() {
                         {showCheckoutPopup && (
                             <div className="checkout-popup">
                                 <h3>Checkout</h3>
-                                <label>
-                                    Coupon Code:
+                                <div className="form-group">
+                                    <label>Coupon Code:</label>
                                     <input
                                         type="text"
                                         value={coupon}
                                         onChange={(e) => setCoupon(e.target.value)}
+                                        className="form-control"
                                     />
-                                </label>
-                                <label>
-                                    Payment Mode:
+                                </div>
+                                <div className="form-group">
+                                    <label>Payment Mode:</label>
                                     <select
                                         value={paymentMode}
                                         onChange={(e) => setPaymentMode(e.target.value)}
+                                        className="form-control"
                                     >
                                         <option value="">Select Payment Mode</option>
                                         <option value="Credit Card">Credit Card</option>
@@ -297,16 +300,19 @@ function UserDashboard() {
                                         <option value="Net Banking">Net Banking</option>
                                         <option value="UPI">UPI</option>
                                     </select>
-                                </label>
-                                <label>
-                                    Address:
+                                </div>
+                                <div className="form-group">
+                                    <label>Address:</label>
                                     <textarea
                                         value={address}
                                         onChange={(e) => setAddress(e.target.value)}
+                                        className="form-control"
                                     />
-                                </label>
-                                <button onClick={handleCheckout} className="user-button">Confirm Checkout</button>
-                                <button onClick={() => setShowCheckoutPopup(false)} className="user-button">Cancel</button>
+                                </div>
+                                <div className="button-group">
+                                    <button onClick={handleCheckout} className="user-button confirm">Confirm Checkout</button>
+                                    <button onClick={() => setShowCheckoutPopup(false)} className="user-button cancel">Cancel</button>
+                                </div>
                             </div>
                         )}
                     </div>
