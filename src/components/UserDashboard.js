@@ -13,6 +13,10 @@ function UserDashboard() {
     const [privilege_status, setPrivilege_status] = useState('');
     const [first_name, setFirst_name] = useState('');
     const [payments, setPayments] = useState([]);
+    const [showCheckoutPopup, setShowCheckoutPopup] = useState(false);
+    const [coupon, setCoupon] = useState('');
+    const [paymentMode, setPaymentMode] = useState('');
+    const [address, setAddress] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -40,6 +44,19 @@ function UserDashboard() {
             } catch (error) {
                 console.error(error);
                 alert('An error occurred while fetching the privilege status');
+            }
+        };
+
+        const handlePayment = async () => {
+            try {
+                const userId = localStorage.getItem('userID');
+                const res = await axios.get(`http://localhost:3000/api/payment/${userId}`);
+                console.log(res.data);
+                setPayments(res.data);
+                fetchCart();
+            } catch (error) {
+                console.error(error);
+                alert('An error occurred while fetching payments');
             }
         };
 
@@ -101,18 +118,7 @@ function UserDashboard() {
         }
     };
 
-    const handlePayment = async () => {
-        try {
-            const userId = localStorage.getItem('userID');
-            const res = await axios.get(`http://localhost:3000/api/payment/${userId}`);
-            console.log(res.data);
-            setPayments(res.data);
-            fetchCart();
-        } catch (error) {
-            console.error(error);
-            alert('An error occurred while fetching payments');
-        }
-    };
+
 
     const handleSearch = async (prompt) => {
         try {
@@ -133,6 +139,7 @@ function UserDashboard() {
             const userId = localStorage.getItem('userID');
             await axios.post(`http://localhost:3000/api/cart/${userId}/${productId}`, { quantity });
             fetchCart();
+            alert('Added to cart');
         } catch (error) {
             console.error(error);
             alert('An error occurred while adding to cart');
@@ -181,6 +188,26 @@ function UserDashboard() {
         } catch (error) {
             console.error(error);
             alert('An error occurred while deleting from the cart');
+        }
+    };
+
+    const handleCheckout = async () => {
+        try {
+            const userId = localStorage.getItem('userID');
+            const res = await axios.post(`http://localhost:3000/api/buy_now/${userId}`, {
+                coupon,
+                mode: paymentMode,
+                address
+            });
+            setShowCheckoutPopup(false);
+            fetchCart();
+            fetchOrders();
+
+            alert(res.data);
+
+        } catch (error) {
+            console.error(error);
+            alert(error.response.data || 'An error occurred while checking out');
         }
     };
 
@@ -246,6 +273,42 @@ function UserDashboard() {
                                 <p>No cart items to show.</p>
                             )}
                         </ul>
+                        <button onClick={() => setShowCheckoutPopup(true)} className="user-button">Checkout</button>
+                        {showCheckoutPopup && (
+                            <div className="checkout-popup">
+                                <h3>Checkout</h3>
+                                <label>
+                                    Coupon Code:
+                                    <input
+                                        type="text"
+                                        value={coupon}
+                                        onChange={(e) => setCoupon(e.target.value)}
+                                    />
+                                </label>
+                                <label>
+                                    Payment Mode:
+                                    <select
+                                        value={paymentMode}
+                                        onChange={(e) => setPaymentMode(e.target.value)}
+                                    >
+                                        <option value="">Select Payment Mode</option>
+                                        <option value="Credit Card">Credit Card</option>
+                                        <option value="Debit Card">Debit Card</option>
+                                        <option value="Net Banking">Net Banking</option>
+                                        <option value="UPI">UPI</option>
+                                    </select>
+                                </label>
+                                <label>
+                                    Address:
+                                    <textarea
+                                        value={address}
+                                        onChange={(e) => setAddress(e.target.value)}
+                                    />
+                                </label>
+                                <button onClick={handleCheckout} className="user-button">Confirm Checkout</button>
+                                <button onClick={() => setShowCheckoutPopup(false)} className="user-button">Cancel</button>
+                            </div>
+                        )}
                     </div>
                 )}
 
