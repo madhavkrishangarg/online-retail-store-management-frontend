@@ -10,6 +10,8 @@ function UserDashboard() {
     const [products, setProducts] = useState([]);
     const [currentView, setCurrentView] = useState('search');
     const [productQuantities, setProductQuantities] = useState({});
+    const [privilege_status, setPrivilege_status] = useState('');
+    const [first_name, setFirst_name] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -18,6 +20,30 @@ function UserDashboard() {
             navigate('/user-login');
             return;
         }
+
+        const fetchFirstName = async () => {
+            try {
+                const response = await axios.get(`http://localhost:3000/api/first_name/${userId}`);
+                setFirst_name(response.data[0].first_name);
+
+            } catch (error) {
+                console.error(error);
+                alert('An error occurred while fetching the first name');
+            }
+        };
+
+        const fetchPrivilegedData = async () => {
+            try {
+                const response = await axios.get(`http://localhost:3000/api/privilege/${userId}`);
+                setPrivilege_status(response.data[0].privilege_status);
+            } catch (error) {
+                console.error(error);
+                alert('An error occurred while fetching the privilege status');
+            }
+        };
+
+        fetchFirstName();
+        fetchPrivilegedData();
 
         const handleNavigation = () => {
             const currentPath = window.location.pathname;
@@ -28,18 +54,23 @@ function UserDashboard() {
 
         window.addEventListener('popstate', handleNavigation);
 
+        if (currentView === 'cart') {
+            const intervalId = setInterval(fetchCart, 1000);
+            return () => clearInterval(intervalId);
+        }
+
         return () => {
             window.removeEventListener('popstate', handleNavigation);
             if (window.location.pathname !== '/user-dashboard') {
                 localStorage.removeItem('userID');
             }
         };
-    }, [navigate]);
+    }, [navigate, currentView]);
 
     const fetchCart = async () => {
         try {
             const userId = localStorage.getItem('userID');
-            const response = await axios.get(`/cart/${userId}`);
+            const response = await axios.get(`http://localhost:3000/api/cart/${userId}`);
             setCart(response.data.cart);
         } catch (error) {
             console.error(error);
@@ -50,7 +81,7 @@ function UserDashboard() {
     const fetchOrders = async () => {
         try {
             const userId = localStorage.getItem('userID');
-            const response = await axios.get(`/orders/${userId}`);
+            const response = await axios.get(`http://localhost:3000/api/orders/${userId}`);
             setOrders(response.data.products);
         } catch (error) {
             console.error(error);
@@ -69,13 +100,13 @@ function UserDashboard() {
     };
 
     const handleAddToCart = async (productId, quantity) => {
-        if(quantity < 1) {
+        if (quantity < 1) {
             alert('Quantity should be at least 1');
             return;
         }
         try {
             const userId = localStorage.getItem('userID');
-            await axios.post(`/cart/${userId}/${productId}`, { quantity });
+            await axios.post(`http://localhost:3000/api/cart/${userId}/${productId}`, { quantity });
             fetchCart();
         } catch (error) {
             console.error(error);
@@ -86,7 +117,7 @@ function UserDashboard() {
     const handleUpdateCart = async (productId, quantity) => {
         try {
             const userId = localStorage.getItem('userID');
-            await axios.put(`/cart/${userId}/${productId}`, { quantity });
+            await axios.put(`http://localhost:3000/api/cart/${userId}/${productId}`, { quantity });
             fetchCart();
         } catch (error) {
             console.error(error);
@@ -115,7 +146,18 @@ function UserDashboard() {
             ...prevProductQuantities,
             [productId]: quantity,
         }));
-    }
+    };
+
+    const handleDeleteFromCart = async (productId) => {
+        try {
+            const userId = localStorage.getItem('userID');
+            await axios.delete(`http://localhost:3000/api/cart/${userId}/${productId}`);
+            fetchCart();
+        } catch (error) {
+            console.error(error);
+            alert('An error occurred while deleting from the cart');
+        }
+    };
 
     return (
         <div className="user-dashboard-container">
@@ -128,8 +170,8 @@ function UserDashboard() {
                         <i className="fas fa-shopping-cart"></i>
                     </button>
                 </div>
-                <h2>User Dashboard</h2>
-
+                <h2>Welcome, {first_name}</h2>
+                <h4>Your Privilege Status: {privilege_status}</h4>
                 <div className="search-section">
                     <h3>Search Products</h3>
 
@@ -143,7 +185,6 @@ function UserDashboard() {
                                     <input
                                         type="number"
                                         min="1"
-                                        // value={productQuantities[product.productID] || 1}
                                         onChange={(e) => handleQuantityChange(product.productID, e.target.value)}
                                         className="quantity-input"
                                     />
@@ -161,9 +202,12 @@ function UserDashboard() {
                         <ul className="cart-list">
                             {cart.map((item) => (
                                 <li key={item.productID} className="cart-item">
-                                    {item.product_name} - {item.quantity}
-                                    <button onClick={() => handleUpdateCart(item.productID, item.quantity + 1)} className="user-button">+</button>
-                                    <button onClick={() => handleUpdateCart(item.productID, item.quantity - 1)} className="user-button">-</button>
+                                    {item.product_name} - {item.quantity}: ProductID - {item.productID}
+                                    <div>
+                                        <button onClick={() => handleUpdateCart(item.productID, 1)} className="user-button">+</button>
+                                        <button onClick={() => handleUpdateCart(item.productID, -1)} className="user-button">-</button>
+                                        <button onClick={() => handleDeleteFromCart(item.productID)} className="user-button">Delete</button>
+                                    </div>
                                 </li>
                             ))}
                         </ul>
