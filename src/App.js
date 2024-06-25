@@ -26,7 +26,7 @@ function App() {
   };
 
   return (
-    <Router>
+    <Router basename="/online-retail-store-management-frontend">
       <div className="App">
         <Routes>
           <Route path="/" element={<Home />} />
