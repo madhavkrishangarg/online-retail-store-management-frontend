@@ -12,7 +12,7 @@ function UserLogin() {
     const handleLogin = async () => {
 
         try {
-            const response = await axios.post('http://localhost:3000/api/auth_cust', { email, password });
+            const response = await axios.post('http://${process.env.domain}/api/auth_cust', { email, password });
             if (response.data.userID > 0) {
                 localStorage.setItem('userID', response.data.userID); // Store userID in localStorage
                 navigate('/user-dashboard');

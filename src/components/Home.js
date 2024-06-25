@@ -4,13 +4,14 @@ import Search from './Search';
 import SearchResults from './SearchResults';
 import './Home.css';
 import axios from 'axios';
+import dotenv from 'dotenv';
 
 function Home() {
     const [searchResults, setSearchResults] = useState([]);
 
     const handleSearch = async (prompt) => {
         try {
-            const response = await axios.post('http://localhost:3000/api/search', { prompt });
+            const response = await axios.post('http://${process.env.domain}/api/search', { prompt });
 
             setSearchResults(response.data);
 
