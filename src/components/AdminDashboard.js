@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './AdminDashboard.css';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 
 function AdminDashboard() {
     const [product, setProduct] = useState({ name: '', price: 0, quantity: 0 });

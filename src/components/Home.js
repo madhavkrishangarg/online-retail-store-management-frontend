@@ -6,6 +6,8 @@ import './Home.css';
 import axios from 'axios';
 import dotenv from 'dotenv';
 
+dotenv.config();
+
 function Home() {
     const [searchResults, setSearchResults] = useState([]);
 

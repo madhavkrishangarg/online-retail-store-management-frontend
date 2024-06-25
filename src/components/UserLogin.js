@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './UserLogin.css';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 function UserLogin() {
     const [email, setEmail] = useState('');

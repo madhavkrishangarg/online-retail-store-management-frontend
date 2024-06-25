@@ -8,6 +8,9 @@ import UserDashboard from './components/UserDashboard';
 import UserSignup from './components/UserSignup';
 import './App.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 function App() {
   const RequireAuthUser = ({ children }) => {

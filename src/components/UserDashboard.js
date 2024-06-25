@@ -3,6 +3,9 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './UserDashboard.css';
 import Search from './Search';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 function UserDashboard() {
     const [cart, setCart] = useState([]);

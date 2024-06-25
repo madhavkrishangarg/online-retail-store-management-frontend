@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './AdminLogin.css';
+import dotenv from 'dotenv';
 
+dotenv.config();
 function AdminLogin() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
