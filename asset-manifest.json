@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/online-retail-store-management-frontend/static/css/main.ac7a3dcd.css",
-    "main.js": "/online-retail-store-management-frontend/static/js/main.2ab5b8e4.js",
+    "main.js": "/online-retail-store-management-frontend/static/js/main.e94ac146.js",
     "static/js/453.8ab44547.chunk.js": "/online-retail-store-management-frontend/static/js/453.8ab44547.chunk.js",
     "static/media/fa-solid-900.ttf": "/online-retail-store-management-frontend/static/media/fa-solid-900.bacd5de623fb563b961a.ttf",
     "static/media/fa-brands-400.ttf": "/online-retail-store-management-frontend/static/media/fa-brands-400.60127e352b7a11f7f1bc.ttf",
@@ -13,11 +13,11 @@
     "static/media/fa-v4compatibility.woff2": "/online-retail-store-management-frontend/static/media/fa-v4compatibility.cf7f5903d06b79ad60f1.woff2",
     "index.html": "/online-retail-store-management-frontend/index.html",
     "main.ac7a3dcd.css.map": "/online-retail-store-management-frontend/static/css/main.ac7a3dcd.css.map",
-    "main.2ab5b8e4.js.map": "/online-retail-store-management-frontend/static/js/main.2ab5b8e4.js.map",
+    "main.e94ac146.js.map": "/online-retail-store-management-frontend/static/js/main.e94ac146.js.map",
     "453.8ab44547.chunk.js.map": "/online-retail-store-management-frontend/static/js/453.8ab44547.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.ac7a3dcd.css",
-    "static/js/main.2ab5b8e4.js"
+    "static/js/main.e94ac146.js"
   ]
 }
