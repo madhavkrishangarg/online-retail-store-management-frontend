@@ -2,9 +2,6 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './UserLogin.css';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 function UserLogin() {
     const [email, setEmail] = useState('');
@@ -15,7 +12,7 @@ function UserLogin() {
     const handleLogin = async () => {
 
         try {
-            const response = await axios.post('http://${process.env.domain}/api/auth_cust', { email, password });
+            const response = await axios.post(`http://${process.env.REACT_APP_DOMAIN}/api/auth_cust`, { email, password });
             if (response.data.userID > 0) {
                 localStorage.setItem('userID', response.data.userID); // Store userID in localStorage
                 navigate('/user-dashboard');

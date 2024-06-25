@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './AdminLogin.css';
-import dotenv from 'dotenv';
 
-dotenv.config();
 function AdminLogin() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -15,7 +13,7 @@ function AdminLogin() {
     console.log("Requesting backend to authenticate admin");
 
     try {
-      const response = await axios.post('http://${process.env.domain}/api/auth_admin', { username, password });
+      const response = await axios.post(`http://${process.env.REACT_APP_DOMAIN}/api/auth_admin`, { username, password });
       // console.log("Response from backend", response.data);
       if (response.data.adminID > 0) {
         localStorage.setItem('adminID', response.data.adminID);

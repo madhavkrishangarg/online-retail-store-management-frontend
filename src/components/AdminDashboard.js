@@ -2,9 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './AdminDashboard.css';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 
 function AdminDashboard() {
@@ -46,7 +43,7 @@ function AdminDashboard() {
 
     const fetchOlap1Data = async () => {
         try {
-            const response = await axios.get('http://${process.env.domain}/api/olap1');
+            const response = await axios.get(`http://${process.env.REACT_APP_DOMAIN}/api/olap1`);
             setOlap1Data(response.data);
             console.log(response.data);
         } catch (error) {
@@ -57,7 +54,7 @@ function AdminDashboard() {
     const fetchOlap2Data = async () => {
         // console.log(year);
         try {
-            const response = await axios.post('http://${process.env.domain}/api/olap2', { year });
+            const response = await axios.post(`http://${process.env.REACT_APP_DOMAIN}/api/olap2`, { year });
             setOlap2Data(response.data);
         } catch (error) {
             console.error('Error fetching OLAP2 data:', error);
@@ -66,7 +63,7 @@ function AdminDashboard() {
 
     const fetchOlap3Data = async () => {
         try {
-            const response = await axios.get('http://${process.env.domain}/api/olap3');
+            const response = await axios.get(`http://${process.env.REACT_APP_DOMAIN}/api/olap3`);
             setOlap3Data(response.data);
             // setGroupedData(olap3data.reduce((acc, item) => {
             //     const category = item.Category || 'No Category';
@@ -97,7 +94,7 @@ function AdminDashboard() {
             return;
         }
         try {
-            const response = await axios.post('http://${process.env.domain}/api/add_product', { ...product, adminID });
+            const response = await axios.post(`http://${process.env.REACT_APP_DOMAIN}/api/add_product`, { ...product, adminID });
             alert('Product added successfully, new product ID: ' + response.data.productID);
         } catch (error) {
             console.error(error);
@@ -112,7 +109,7 @@ function AdminDashboard() {
             return;
         }
         try {
-            const response = await axios.post('http://${process.env.domain}/api/add_category', { ...category, adminID });
+            const response = await axios.post(`http://${process.env.REACT_APP_DOMAIN}/api/add_category`, { ...category, adminID });
             alert('Category added successfully, new category ID: ' + response.data.categoryID);
         } catch (error) {
             console.error(error);
@@ -127,7 +124,7 @@ function AdminDashboard() {
             return;
         }
         try {
-            await axios.post('http://${process.env.domain}/api/map_product-category', { ...productCategoryMap, adminID });
+            await axios.post(`http://${process.env.REACT_APP_DOMAIN}/api/map_product-category`, { ...productCategoryMap, adminID });
             alert('Product linked to category successfully');
         } catch (error) {
             console.error(error);
@@ -142,7 +139,7 @@ function AdminDashboard() {
             return;
         }
         try {
-            await axios.put(`http://${process.env.domain}/api/update_price/${updatePrice.productID}`, { adminID, price: updatePrice.price });
+            await axios.put(`http://${process.env.REACT_APP_DOMAIN}/api/update_price/${updatePrice.productID}`, { adminID, price: updatePrice.price });
             alert('Price updated successfully');
         } catch (error) {
             console.error(error);
@@ -157,7 +154,7 @@ function AdminDashboard() {
             return;
         }
         try {
-            await axios.put(`http://${process.env.domain}/api/add_quantity/${addQuantity.productID}`, { adminID, quantity: addQuantity.quantity });
+            await axios.put(`http://${process.env.REACT_APP_DOMAIN}/api/add_quantity/${addQuantity.productID}`, { adminID, quantity: addQuantity.quantity });
             alert('Quantity added successfully');
         } catch (error) {
             console.error(error);
