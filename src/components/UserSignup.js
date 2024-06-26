@@ -17,7 +17,7 @@ function UserSignup() {
     const handleSignup = async () => {
 
         try {
-            const response = await axios.post(`https://${process.env.REACT_APP_DOMAIN}/api/new_user`, {
+            const response = await axios.post(`${process.env.REACT_APP_DOMAIN}/api/new_user`, {
                 first_name: firstName,
                 last_name: lastName,
                 user_address: address,

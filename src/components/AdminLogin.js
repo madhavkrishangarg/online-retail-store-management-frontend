@@ -13,7 +13,7 @@ function AdminLogin() {
     console.log("Requesting backend to authenticate admin");
 
     try {
-      const response = await axios.post(`https://${process.env.REACT_APP_DOMAIN}/api/auth_admin`, { username, password });
+      const response = await axios.post(`${process.env.REACT_APP_DOMAIN}/api/auth_admin`, { username, password });
       // console.log("Response from backend", response.data);
       if (response.data.adminID > 0) {
         localStorage.setItem('adminID', response.data.adminID);

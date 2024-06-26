@@ -12,14 +12,15 @@ function UserLogin() {
     const handleLogin = async () => {
 
         try {
-            const response = await axios.post(`https://${process.env.REACT_APP_DOMAIN}/api/auth_cust`, { email, password });
+            const response = await axios.post(`${process.env.REACT_APP_DOMAIN}/api/auth_cust`, { email, password });
             if (response.data.userID > 0) {
-                localStorage.setItem('userID', response.data.userID); // Store userID in localStorage
+                localStorage.setItem('userID', response.data.userID);
                 navigate('/user-dashboard');
             } else if (response.data.status === 401) {
                 alert('Invalid credentials');
             } else {
                 alert('An error occurred');
+                console.log(response.data);
             }
         } catch (error) {
             if (error.response && error.response.status === 500) {
@@ -28,6 +29,7 @@ function UserLogin() {
                 alert('Invalid credentials');
             } else {
                 alert('An error occurred');
+                console.log(error);
             }
         }
 

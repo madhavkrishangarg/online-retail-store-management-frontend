@@ -28,7 +28,7 @@ function UserDashboard() {
 
         const fetchFirstName = async () => {
             try {
-                const response = await axios.get(`https://${process.env.REACT_APP_DOMAIN}/api/first_name/${userId}`);
+                const response = await axios.get(`${process.env.REACT_APP_DOMAIN}/api/first_name/${userId}`);
                 setFirst_name(response.data[0].first_name);
 
             } catch (error) {
@@ -39,7 +39,7 @@ function UserDashboard() {
 
         const fetchPrivilegedData = async () => {
             try {
-                const response = await axios.get(`https://${process.env.REACT_APP_DOMAIN}/api/privilege/${userId}`);
+                const response = await axios.get(`${process.env.REACT_APP_DOMAIN}/api/privilege/${userId}`);
                 setPrivilege_status(response.data[0].privilege_status);
             } catch (error) {
                 console.error(error);
@@ -50,7 +50,7 @@ function UserDashboard() {
         const handlePayment = async () => {
             try {
                 const userId = localStorage.getItem('userID');
-                const res = await axios.get(`https://${process.env.REACT_APP_DOMAIN}/api/payment/${userId}`);
+                const res = await axios.get(`${process.env.REACT_APP_DOMAIN}/api/payment/${userId}`);
                 // console.log(res.data);
                 setPayments(res.data);
                 fetchCart();
@@ -65,7 +65,7 @@ function UserDashboard() {
 
         const handleNavigation = () => {
             const currentPath = window.location.pathname;
-            if (currentPath !== '/user-dashboard') {
+            if (currentPath !== '/online-retail-store-management-frontend/user-dashboard') {
                 localStorage.removeItem('userID');
             }
         };
@@ -89,7 +89,7 @@ function UserDashboard() {
 
         return () => {
             window.removeEventListener('popstate', handleNavigation);
-            if (window.location.pathname !== '/user-dashboard') {
+            if (window.location.pathname !== '/online-retail-store-management-frontend/user-dashboard') {
                 localStorage.removeItem('userID');
             }
         };
@@ -98,7 +98,7 @@ function UserDashboard() {
     const fetchCart = async () => {
         try {
             const userId = localStorage.getItem('userID');
-            const response = await axios.get(`https://${process.env.REACT_APP_DOMAIN}/api/cart/${userId}`);
+            const response = await axios.get(`${process.env.REACT_APP_DOMAIN}/api/cart/${userId}`);
             setCart(response.data.cart);
         } catch (error) {
             console.error(error);
@@ -109,7 +109,7 @@ function UserDashboard() {
     const fetchOrders = async () => {
         try {
             const userId = localStorage.getItem('userID');
-            const response = await axios.get(`https://${process.env.REACT_APP_DOMAIN}/api/orders/${userId}`);
+            const response = await axios.get(`${process.env.REACT_APP_DOMAIN}/api/orders/${userId}`);
             setOrders(response.data);
             // console.log(response.data);
         } catch (error) {
@@ -120,7 +120,7 @@ function UserDashboard() {
 
     const handleSearch = async (prompt) => {
         try {
-            const response = await axios.post(`https://${process.env.REACT_APP_DOMAIN}/api/search`, { prompt });
+            const response = await axios.post(`${process.env.REACT_APP_DOMAIN}/api/search`, { prompt });
             setProducts(response.data);
         } catch (error) {
             console.error(error);
@@ -135,7 +135,7 @@ function UserDashboard() {
         }
         try {
             const userId = localStorage.getItem('userID');
-            const res = await axios.post(`https://${process.env.REACT_APP_DOMAIN}/api/cart/${userId}/${productId}`, { quantity });
+            const res = await axios.post(`${process.env.REACT_APP_DOMAIN}/api/cart/${userId}/${productId}`, { quantity });
             fetchCart();
             alert('Added to cart');
         } catch (error) {
@@ -147,7 +147,7 @@ function UserDashboard() {
     const handleUpdateCart = async (productId, quantity) => {
         try {
             const userId = localStorage.getItem('userID');
-            await axios.put(`https://${process.env.REACT_APP_DOMAIN}/api/cart/${userId}/${productId}`, { quantity });
+            await axios.put(`${process.env.REACT_APP_DOMAIN}/api/cart/${userId}/${productId}`, { quantity });
             fetchCart();
             alert('Cart updated');
         } catch (error) {
@@ -159,7 +159,7 @@ function UserDashboard() {
     const handleCancelOrder = async (orderId) => {
         try {
             const userId = localStorage.getItem('userID');
-            await axios.delete(`https://${process.env.REACT_APP_DOMAIN}/api/cancel_order/${orderId}`, { data: { userID: userId } });
+            await axios.delete(`${process.env.REACT_APP_DOMAIN}/api/cancel_order/${orderId}`, { data: { userID: userId } });
             fetchOrders();
             alert('Order cancelled');
         } catch (error) {
@@ -183,7 +183,7 @@ function UserDashboard() {
     const handleDeleteFromCart = async (productId) => {
         try {
             const userId = localStorage.getItem('userID');
-            await axios.delete(`https://${process.env.REACT_APP_DOMAIN}/api/cart/${userId}/${productId}`);
+            await axios.delete(`${process.env.REACT_APP_DOMAIN}/api/cart/${userId}/${productId}`);
             fetchCart();
             alert('Deleted from cart');
         } catch (error) {
@@ -195,7 +195,7 @@ function UserDashboard() {
     const handleCheckout = async () => {
         try {
             const userId = localStorage.getItem('userID');
-            const res = await axios.post(`https://${process.env.REACT_APP_DOMAIN}/api/buy_now/${userId}`, {
+            const res = await axios.post(`${process.env.REACT_APP_DOMAIN}/api/buy_now/${userId}`, {
                 coupon,
                 mode: paymentMode,
                 address

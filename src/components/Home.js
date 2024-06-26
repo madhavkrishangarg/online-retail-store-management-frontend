@@ -11,7 +11,7 @@ function Home() {
 
     const handleSearch = async (prompt) => {
         try {
-            const response = await axios.post(`https://${process.env.REACT_APP_DOMAIN}/api/search`, { prompt });
+            const response = await axios.post(`${process.env.REACT_APP_DOMAIN}/api/search`, { prompt });
 
             setSearchResults(response.data);
 

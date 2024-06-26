@@ -26,7 +26,7 @@ function AdminDashboard() {
 
         const handleNavigation = () => {
             const currentPath = window.location.pathname;
-            if (currentPath !== '/admin-dashboard') {
+            if (currentPath !== '/online-retail-store-management-frontend/admin-dashboard') {
                 localStorage.removeItem('adminID');
             }
         };
@@ -35,7 +35,7 @@ function AdminDashboard() {
 
         return () => {
             window.removeEventListener('popstate', handleNavigation);
-            if (window.location.pathname !== '/admin-dashboard') {
+            if (window.location.pathname !== '/online-retail-store-management-frontend/admin-dashboard') {
                 localStorage.removeItem('adminID');
             }
         };
@@ -43,7 +43,7 @@ function AdminDashboard() {
 
     const fetchOlap1Data = async () => {
         try {
-            const response = await axios.get(`https://${process.env.REACT_APP_DOMAIN}/api/olap1`);
+            const response = await axios.get(`${process.env.REACT_APP_DOMAIN}/api/olap1`);
             setOlap1Data(response.data);
             console.log(response.data);
         } catch (error) {
@@ -54,7 +54,7 @@ function AdminDashboard() {
     const fetchOlap2Data = async () => {
         // console.log(year);
         try {
-            const response = await axios.post(`https://${process.env.REACT_APP_DOMAIN}/api/olap2`, { year });
+            const response = await axios.post(`${process.env.REACT_APP_DOMAIN}/api/olap2`, { year });
             setOlap2Data(response.data);
         } catch (error) {
             console.error('Error fetching OLAP2 data:', error);
@@ -63,7 +63,7 @@ function AdminDashboard() {
 
     const fetchOlap3Data = async () => {
         try {
-            const response = await axios.get(`https://${process.env.REACT_APP_DOMAIN}/api/olap3`);
+            const response = await axios.get(`${process.env.REACT_APP_DOMAIN}/api/olap3`);
             setOlap3Data(response.data);
             // setGroupedData(olap3data.reduce((acc, item) => {
             //     const category = item.Category || 'No Category';
@@ -94,7 +94,7 @@ function AdminDashboard() {
             return;
         }
         try {
-            const response = await axios.post(`https://${process.env.REACT_APP_DOMAIN}/api/add_product`, { ...product, adminID });
+            const response = await axios.post(`${process.env.REACT_APP_DOMAIN}/api/add_product`, { ...product, adminID });
             alert('Product added successfully, new product ID: ' + response.data.productID);
         } catch (error) {
             console.error(error);
@@ -109,7 +109,7 @@ function AdminDashboard() {
             return;
         }
         try {
-            const response = await axios.post(`https://${process.env.REACT_APP_DOMAIN}/api/add_category`, { ...category, adminID });
+            const response = await axios.post(`${process.env.REACT_APP_DOMAIN}/api/add_category`, { ...category, adminID });
             alert('Category added successfully, new category ID: ' + response.data.categoryID);
         } catch (error) {
             console.error(error);
@@ -124,7 +124,7 @@ function AdminDashboard() {
             return;
         }
         try {
-            await axios.post(`https://${process.env.REACT_APP_DOMAIN}/api/map_product-category`, { ...productCategoryMap, adminID });
+            await axios.post(`${process.env.REACT_APP_DOMAIN}/api/map_product-category`, { ...productCategoryMap, adminID });
             alert('Product linked to category successfully');
         } catch (error) {
             console.error(error);
@@ -139,7 +139,7 @@ function AdminDashboard() {
             return;
         }
         try {
-            await axios.put(`https://${process.env.REACT_APP_DOMAIN}/api/update_price/${updatePrice.productID}`, { adminID, price: updatePrice.price });
+            await axios.put(`${process.env.REACT_APP_DOMAIN}/api/update_price/${updatePrice.productID}`, { adminID, price: updatePrice.price });
             alert('Price updated successfully');
         } catch (error) {
             console.error(error);
@@ -154,7 +154,7 @@ function AdminDashboard() {
             return;
         }
         try {
-            await axios.put(`https://${process.env.REACT_APP_DOMAIN}/api/add_quantity/${addQuantity.productID}`, { adminID, quantity: addQuantity.quantity });
+            await axios.put(`${process.env.REACT_APP_DOMAIN}/api/add_quantity/${addQuantity.productID}`, { adminID, quantity: addQuantity.quantity });
             alert('Quantity added successfully');
         } catch (error) {
             console.error(error);
