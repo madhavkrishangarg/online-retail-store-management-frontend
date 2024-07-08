@@ -122,6 +122,11 @@ function UserDashboard() {
         try {
             const response = await axios.post(`${process.env.REACT_APP_DOMAIN}/api/search`, { prompt });
             setProducts(response.data);
+
+            if(response.data.length === 0){
+                alert('No results found');
+            }
+
         } catch (error) {
             console.error(error);
             alert('An error occurred while searching for products');

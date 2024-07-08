@@ -15,6 +15,10 @@ function Home() {
 
             setSearchResults(response.data);
 
+            if(response.data.length === 0){
+                alert('No results found');
+            }
+
         } catch (error) {
             console.error('Error fetching search results:', error);
         }
